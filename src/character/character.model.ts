@@ -1,47 +1,66 @@
-import { Column, Model, Table, DataType } from 'sequelize-typescript';
+// src/models/character.model.ts
+import {
+  Table,
+  Column,
+  Model,
+  ForeignKey,
+  BelongsTo,
+  BelongsToMany,
+  DataType,
+  HasOne,
+} from 'sequelize-typescript';
+import { Ability } from 'src/ability/ability.model';
+import { CharacterEquipment } from 'src/character-equipment/character-equipment.model';
+import { CharacterSkill } from 'src/character-skill/character-skill.model';
+import { CharacterSpell } from 'src/character-spell/character-spell.model';
+import { Class } from 'src/class/class.model';
+import { Equipment } from 'src/equipment/equipment.model';
+import { Race } from 'src/race/race.model';
+import { Skill } from 'src/skill/skill.model';
+import { Spell } from 'src/spell/spell.model';
+import { User } from 'src/user/user.model';
 
 @Table
 export class Character extends Model<Character> {
-  @Column
+  @Column(DataType.STRING)
   name: string;
 
+  @ForeignKey(() => User)
   @Column
-  race: string;
+  userId: number;
 
+  @BelongsTo(() => User)
+  user: User;
+
+  @ForeignKey(() => Race)
   @Column
-  class: string;
+  raceId: number;
 
+  @BelongsTo(() => Race)
+  race: Race;
+
+  @ForeignKey(() => Class)
   @Column
-  background: string;
+  classId: number;
 
-  @Column(DataType.JSON)
-  abilityScores: {
-    strength: number;
-    dexterity: number;
-    constitution: number;
-    intelligence: number;
-    wisdom: number;
-    charisma: number;
-  };
+  @BelongsTo(() => Class)
+  class: Class;
 
-  @Column
-  archeTypes: string;
+  @Column(DataType.INTEGER)
+  level: number;
 
-  @Column(DataType.ARRAY(DataType.STRING))
-  skills: string[];
+  @Column(DataType.INTEGER)
+  experiencePoints: number;
 
-  @Column(DataType.JSON)
-  equipment_choices: {
-    item: string;
-    alternate: string | string[];
-    itemDisabled: boolean;
-    alternateDisabled: boolean;
-    selected: string | null;
-  }[];
+  @HasOne(() => Ability)
+  abilities: Ability;
 
-  @Column(DataType.ARRAY(DataType.STRING))
-  standart_equipment: string[];
+  @BelongsToMany(() => Skill, () => CharacterSkill)
+  skills: Skill[];
 
-  @Column(DataType.STRING)
-  sub: string;
+  @BelongsToMany(() => Spell, () => CharacterSpell)
+  spells: Spell[];
+
+  @BelongsToMany(() => Equipment, () => CharacterEquipment)
+  equipment: Equipment[];
 }
