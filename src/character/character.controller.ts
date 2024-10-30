@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CharacterService } from './character.service';
-import { Character } from './character.model';
+import { Character } from './models/character.model';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('character')
@@ -16,8 +16,14 @@ export class CharacterController {
   constructor(private readonly characterService: CharacterService) {}
 
   @Post()
-  async create(@Body() character: Character): Promise<Character> {
-    const createdCharacter = await this.characterService.create(character);
+  async create(
+    @Body() character: Character,
+    @Body('skills') skills: string[],
+  ): Promise<Character> {
+    const createdCharacter = await this.characterService.create(
+      character,
+      skills,
+    );
     console.log('Character created successfully:', createdCharacter);
     return createdCharacter;
   }
@@ -50,7 +56,7 @@ export class CharacterController {
       throw new Error("Invalid 'sub' parameter");
     }
 
-    console.log('Server SUB:', sub);
+    // console.log('Server SUB:', sub);
 
     const character = await this.characterService.findOne(+id);
     if (!character) {
@@ -64,7 +70,6 @@ export class CharacterController {
       );
       throw new Error('Unauthorized access');
     }
-
     return character;
   }
 }

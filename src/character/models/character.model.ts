@@ -1,4 +1,6 @@
-import { Column, Model, Table, DataType } from 'sequelize-typescript';
+import { Column, Model, Table, DataType, HasMany } from 'sequelize-typescript';
+import { CharacterAbilityModifier } from './character__abilityModifier.model';
+import { CharacterSkill } from './skills.model';
 
 @Table
 export class Character extends Model<Character> {
@@ -10,6 +12,9 @@ export class Character extends Model<Character> {
 
   @Column
   class: string;
+
+  @Column(DataType.INTEGER)
+  level: number;
 
   @Column
   background: string;
@@ -24,11 +29,17 @@ export class Character extends Model<Character> {
     charisma: number;
   };
 
+  @HasMany(() => CharacterAbilityModifier)
+  abilityModifiers: CharacterAbilityModifier[];
+
+  @HasMany(() => CharacterSkill)
+  skillModifiers: CharacterSkill[];
+
+  @Column(DataType.INTEGER)
+  proficiencyBonus: number;
+
   @Column
   archeTypes: string;
-
-  @Column(DataType.ARRAY(DataType.STRING))
-  skills: string[];
 
   @Column(DataType.JSON)
   equipment_choices: {

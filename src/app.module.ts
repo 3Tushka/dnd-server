@@ -5,8 +5,12 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { CharacterModule } from './character/character.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Character } from './character/character.model';
 import { AuthModule } from './auth/auth.module';
+import { Character } from './character/models/character.model';
+import { CampaignModule } from './campaign/campaign.module';
+import { CharacterSkill } from './character/models/skills.model';
+import { CharacterSavingThrow } from './character/models/savings.model';
+import { CharacterAbilityModifier } from './character/models/character__abilityModifier.model';
 
 @Module({
   imports: [
@@ -24,10 +28,16 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
       logging: console.log,
     }),
-    SequelizeModule.forFeature([Character]),
+    SequelizeModule.forFeature([
+      Character,
+      CharacterSkill,
+      CharacterSavingThrow,
+      CharacterAbilityModifier,
+    ]),
     DatabaseModule,
     CharacterModule,
     AuthModule,
+    CampaignModule,
   ],
   controllers: [AppController],
   providers: [AppService],
